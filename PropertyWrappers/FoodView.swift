@@ -5,13 +5,14 @@
 //  Created by Caroline Davis on 22/9/2023.
 //
 
-// Example of @State, TextInput, List, Button, Delete item on list, Add item on list
+// Example of @State, @FocusState, TextInput, List, Button, Delete item on list, Add item on list
 
 import SwiftUI
 
 struct FoodView: View {
     @State private var food: String = ""
     @State private var allFoods: [FoodItem] = []
+    @FocusState private var isTextFieldFocused: Bool
 
     func addFoods() {
           if !food.isEmpty {
@@ -25,17 +26,25 @@ struct FoodView: View {
         allFoods.remove(atOffsets: offsets)
     }
 
+
     var body: some View {
         VStack {
             List {
                 HStack{
                     TextField("Type here...", text: $food)
+                        .accentColor(.yellow)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .focused($isTextFieldFocused)
+                        .onAppear {
+                          isTextFieldFocused = true
+                         }
                         .onSubmit {
                             addFoods()
+                            isTextFieldFocused = true
                         }
                     Button(action: {
                         addFoods()
+                        isTextFieldFocused = true
                     }) {
                         Text("Enter")
                             .padding(7)
@@ -55,6 +64,8 @@ struct FoodView: View {
                                 }
                             }){
                                 Image(systemName: "trash.circle.fill")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
                                     .foregroundColor(.red)
                             }
                         }
